@@ -11,11 +11,10 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
+  id    String     @id 
   email String  @unique
   firstName String?
   lastName String?
-  password String
   forms Form[]
   formResponses Response[]
 }
@@ -25,7 +24,7 @@ model Form {
   title       String
   description String?
   isOpen      Boolean   @default(false)
-  authorId    Int
+  authorId    String
   author      User      @relation(fields: [authorId], references: [id])
   questions   Question[]
   startDate   DateTime?
@@ -38,7 +37,6 @@ model Question {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  type        String
   formId      Int
   form        Form      @relation(fields: [formId], references: [id])
   options     Option[]
@@ -69,9 +67,8 @@ model Option {
 
 model Response {
   id          Int       @id @default(autoincrement())
-  userId      Int
+  userId      String
   formId      Int
-  answer      String
   user        User      @relation(fields: [userId], references: [id])
   form        Form      @relation(fields: [formId], references: [id])
 }

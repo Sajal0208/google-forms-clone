@@ -22,10 +22,11 @@ model User {
 model Form {
   id          Int       @id @default(autoincrement())
   title       String
+  formImage       String?
   description String?
   isOpen      Boolean   @default(false)
-  authorId    String
-  author      User      @relation(fields: [authorId], references: [id])
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
   questions   Question[]
   startDate   DateTime?
   endDate     DateTime?
@@ -37,30 +38,25 @@ model Question {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
+  formImage       String?
   formId      Int
   form        Form      @relation(fields: [formId], references: [id])
   options     Option[]
+  isRequired  Boolean   @default(true)
   questionType QuestionType @default(TEXT)
-  answer     Answer?
-  answerId   Int
+  answer     Int[]
 }
 
 enum QuestionType {
   TEXT
   MULTIPLE_CHOICE
-  CHECKBOX
+  SINGLE_CHOICE
 }
 
-model Answer {
-  id          Int       @id @default(autoincrement())
-  questionId  Int     @unique
-  question    Question  @relation(fields: [questionId], references: [id])
-}
 
 model Option {
   id          Int       @id @default(autoincrement())
   title       String
-  description String?
   questionId  Int
   question    Question  @relation(fields: [questionId], references: [id])
 }

@@ -3,7 +3,8 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ChakraProvider } from "@chakra-ui/react";
-import WithSubnavigation from "../components/Navbar"
+import WithSubnavigation from "../components/Navbar";
+import { RecoilRoot } from "recoil";
 
 const colors = {
   brand: {
@@ -19,14 +20,16 @@ const theme = {
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <ChakraProvider>
-      <ClerkProvider {...pageProps}>
-        <div className="min-h-screen">
-          <WithSubnavigation />
-          <Component {...pageProps} />
-        </div>
-      </ClerkProvider>
-    </ChakraProvider>
+    <RecoilRoot>
+      <ChakraProvider>
+        <ClerkProvider {...pageProps}>
+          <div className="min-h-screen overflow-x-hidden">
+            <WithSubnavigation />
+            <Component {...pageProps} />
+          </div>
+        </ClerkProvider>
+      </ChakraProvider>
+    </RecoilRoot>
   );
 };
 export default api.withTRPC(MyApp);

@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
 
-const Wrapper = () => {
-  return (
-    <div></div>
-  )
+interface Props {
+  children: React.ReactNode;
+  className: string;
+  customStyle?: React.CSSProperties;
 }
 
-export default Wrapper
+const Wrapper = ({ children, className, customStyle }: Props) => {
+  return <div className={className} style = {customStyle}>
+    {children}
+  </div>;
+};
+
+export default Wrapper;

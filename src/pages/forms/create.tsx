@@ -6,7 +6,7 @@ import CreateForm from "~/components/CreateForm";
 export default function Create() {
   return (
     <Box className="relative flex flex-col">
-      <Box className="relative">
+      <Box className="w-96 relative">
         <AnimatedText
           text={"Create Form"}
           className="relative left-8 top-8 text-5xl text-purple-700 sm:left-16 sm:top-16 sm:text-6xl md:left-24 md:top-24 md:text-7xl"

@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 import { createQuestionInputValidator } from './questionInputValidator';
 
 const responseValidator = z.object({
@@ -8,12 +8,11 @@ const responseValidator = z.object({
 })
 
 export const createFormInputValidator = z.object({
-    title: z.string(),
-    description: z.string(),
-    authorId: z.string(),
-    questions: z.array(createQuestionInputValidator), 
-    startDate: z.string(),
-    endDate: z.string(),
+    title: z.string().min(3),
+    description: z.string().optional(),
+    questions: z.array(createQuestionInputValidator).min(1), 
+    startDate: z.date().min(new Date()),
+    endDate: z.date().min(new Date()),
     responses: z.array(responseValidator).optional(),
     link: z.string().optional(),                                       
 })

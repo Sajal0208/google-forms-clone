@@ -1,5 +1,5 @@
-import { Box, Textarea } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import { Box, NumberInputFieldProps, Textarea } from "@chakra-ui/react";
+import React, { use, useEffect } from "react";
 import { CreateFormInputValidator } from "~/helpers/formInputValidator";
 import Wrapper from "./Wrapper";
 import CustomFormButton from "./CustomFormButton";
@@ -11,21 +11,27 @@ interface Props {
 }
 
 interface DisplayQuestionsProps {
-  questions: CreateFormInputValidator["questions"];
+  formValues: CreateFormInputValidator;
 }
 
 interface OptionsPreviewProps {
-  options: CreateFormInputValidator["questions"][0]["options"];
-  questionType: CreateFormInputValidator["questions"][0]["questionType"];
-  answers: CreateFormInputValidator["questions"][0]["answer"];
+  formValues: CreateFormInputValidator;
+  index: number;
 }
 
-const OptionsPreview = ({
-  options,
-  questionType,
-  answers,
-}: OptionsPreviewProps) => {
+const OptionsPreview = ({ formValues, index }: OptionsPreviewProps) => {
+  const { questions } = formValues;
+  
+  const particularQuestion = questions[index]
+  
+  if(particularQuestion === undefined) {
+    return <></>
+  } 
+  
+  const { answer: answers, options, questionType  } = particularQuestion
+  
   console.log(answers);
+  
   if (questionType === "TEXT") {
     return (
       <>
@@ -39,45 +45,52 @@ const OptionsPreview = ({
   }
 
   if (questionType === "MULTIPLE_CHOICE") {
-    console.log("MULTIPLE_CHOICE")
-
-    const indexOfAnswers = answers.map((answer) => {
-      return answer
-    });
-
-    console.log(indexOfAnswers);
+    console.log("MULTIPLE_CHOICE");
+    console.log(answers);
+    useEffect(() => {
+      console.log("Answer changed");
+    }, [answers, questionType, options]);
+  
 
     return (
       <>
-        <Box>
-          {options.map((option, index) => {
-            if (option.optionTitle === "") {
-              return <></>;
-            }
-            return (
-              <Box key={index} className="flex flex-row">
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  disabled={true}
-                  // defaultChecked={}
-                />
-                <Box>{option.optionTitle}</Box>
-              </Box>
-            );
-          })}
-        </Box>
+        {options.map((option, index) => {
+          console.log("got re-rendered");
+          const answersArray = answers.map((answer, index) => {
+            return Number(answer);
+          });
+          console.log(answersArray);
+          console.log(answersArray.includes(index));
+          if (option.optionTitle === "") {
+            return <></>;
+          }
+          return (
+            <Box key={index} className="flex flex-row">
+              <input
+                key={index + 1}
+                type="checkbox"
+                className="mr-2"
+                defaultChecked={answersArray.includes(index)}
+                disabled={true}
+              />
+              <Box>{option.optionTitle}</Box>
+            </Box>
+          );
+        })}
       </>
     );
   }
 
   if (questionType === "SINGLE_CHOICE") {
-    console.log("SINGLE_CHOICE")
-
+    useEffect(() => {
+      console.log("Answer changed");
+    }, [answers, questionType, answers]);
+  
     return (
       <>
         <Box>
           {options.map((option, index) => {
+            const answer = Number(answers[0]);
             if (option.optionTitle === "") {
               return <></>;
             }
@@ -88,7 +101,7 @@ const OptionsPreview = ({
                   type="radio"
                   className="mr-2"
                   disabled={true}
-                  defaultChecked={answers[0] === index}
+                  defaultChecked={answer === index}
                 />
                 <Box>{option.optionTitle}</Box>
               </Box>
@@ -100,9 +113,11 @@ const OptionsPreview = ({
   }
 };
 
-const DisplayQuestions = ({ questions }: DisplayQuestionsProps) => {
+const DisplayQuestions = ({ formValues }: DisplayQuestionsProps) => {
+  const { questions } = formValues;
+
   if (questions.length === 0) {
-    return <>No questions added</>;
+    return <></>;
   }
 
   return (
@@ -114,13 +129,8 @@ const DisplayQuestions = ({ questions }: DisplayQuestionsProps) => {
               {index + 1}. {question.questionTitle}
             </Box>
             <Box>{question.questionDescription}</Box>
-
             <Box>
-              <OptionsPreview
-                questionType={question.questionType}
-                options={question.options}
-                answers={question.answer}
-              />
+              <OptionsPreview index = {index} formValues={formValues} />
             </Box>
           </Wrapper>
         );
@@ -133,7 +143,7 @@ const FormPreviewComponentDesktop = ({
   formValues,
   updateFormValues,
 }: Props) => {
-  const { title, description, questions } = formValues;
+  const { title, description } = formValues;
 
   return (
     <Wrapper className="relative mr-5 hidden overflow-scroll p-4 shadow-inner sm:w-1/3 lg:block xl:w-1/2">
@@ -151,7 +161,7 @@ const FormPreviewComponentDesktop = ({
           <Box className="mt-2 text-xl text-gray-500">{description}</Box>
         </Box>
         <Box className="mt-8 flex w-full flex-row">
-          <DisplayQuestions questions={questions} />
+          <DisplayQuestions formValues={formValues} />
         </Box>
       </Box>
     </Wrapper>

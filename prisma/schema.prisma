@@ -38,13 +38,21 @@ model Question {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  formImage       String?
+  formImage   String?
   formId      Int
   form        Form      @relation(fields: [formId], references: [id])
   options     Option[]
   isRequired  Boolean   @default(true)
   questionType QuestionType @default(TEXT)
-  answer     Int[]
+  answer     Answer? 
+  answerId   Int
+}
+
+model Answer {
+  id          Int       @id @default(autoincrement())
+  answer      String
+  questionId  Int @unique
+  question    Question  @relation(fields: [questionId], references: [id])
 }
 
 enum QuestionType {
@@ -56,7 +64,8 @@ enum QuestionType {
 
 model Option {
   id          Int       @id @default(autoincrement())
-  title       String
+  optionTitle       String
+  optionImage       String?
   questionId  Int
   question    Question  @relation(fields: [questionId], references: [id])
 }

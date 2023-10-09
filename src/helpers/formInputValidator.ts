@@ -14,7 +14,7 @@ export const createFormInputValidator = z.object({
     startDate: z.date().min(new Date()),
     endDate: z.date().min(new Date()),
     responses: z.array(responseValidator).optional(),
-    link: z.string().optional(),                                       
+    link: z.string().optional(),                                     
 })
 export type CreateFormInputValidator = z.infer<typeof createFormInputValidator>
 
